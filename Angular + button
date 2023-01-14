@@ -1,0 +1,27 @@
+import { Component, OnInit } from '@angular/core';
+import { CustomerService } from './customer.service';
+import { Customer } from './customer';
+
+@Component({
+  selector: 'app-customers',
+  template: `
+    <div *ngFor="let customer of customers">
+      <p>{{ customer.name }}</p>
+      <p>{{ customer.companyName }}</p>
+      <p>{{ customer.phone }}</p>
+      <p>{{ customer.email }}</p>
+    </div>
+  `,
+  providers: [CustomerService]
+})
+export class CustomersComponent implements OnInit {
+  customers: Customer[];
+
+  constructor(private customerService: CustomerService) { }
+
+  ngOnInit() {
+    this.customerService.getCustomers()
+      .subscribe(customers => this.customers = customers);
+  }
+}
+<button (click)="ngOnInit()">Load Customers</button>
