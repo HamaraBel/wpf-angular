@@ -1,0 +1,52 @@
+// ViewModel
+public class MainViewModel : INotifyPropertyChanged
+{
+    private readonly ICustomerRepository _customerRepository;
+    private List<Customer> _customers;
+
+    public MainViewModel(ICustomerRepository customerRepository)
+    {
+        _customerRepository = customerRepository;
+        LoadCustomersCommand = new RelayCommand(LoadCustomers);
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public ICommand LoadCustomersCommand { get; set; }
+
+    public List<Customer> Customers
+    {
+        get => _customers;
+        set
+        {
+            _customers = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private async void LoadCustomers()
+    {
+        Customers = await _customerRepository.GetAllCustomers();
+    }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+// View
+<DataGrid ItemsSource="{Binding Customers}">
+    <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+        <DataGridTextColumn Binding="{Binding CompanyName}" Header="Company Name" />
+        <DataGridTextColumn Binding="{B<DataGrid ItemsSource="{Binding Customers}">
+    <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+        <DataGridTextColumn Binding="{Binding CompanyName}" Header="Company Name" />
+        <DataGridTextColumn Binding="{Binding Phone}" Header="Phone" />
+        <DataGridTextColumn Binding="{Binding Email}" Header="Email" />
+    </DataGrid.Columns>
+</DataGrid>
+
+<Button Command="{Binding LoadCustomersCommand}" Content="Load Customers"/>
